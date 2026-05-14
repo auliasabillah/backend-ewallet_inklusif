@@ -1,18 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
 
-Route::post('/logi', function (Request $request) {
-    $email = $request->email;
-    $password = $request->password;
-
-    return response()->json([
-        'email' => $email,
-        'password' => $password
-    ]);
-});
-
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/test', function () {
     return "HELLO";
 });
