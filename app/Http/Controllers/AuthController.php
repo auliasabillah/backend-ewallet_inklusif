@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\WalletController;
 
 class AuthController extends Controller
 {
@@ -12,13 +13,17 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
+            'notelp' => 'required|string',
             'password' => 'required|min:5',
         ]);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'notelp' => $request->notelp,
             'password' => bcrypt($request->password)
         ]);
+        $walletController = new WalletController();
+        $walletController->createWallet($user->id);
         return response()->json([
             'message' => 'Register berhasil',
             'user' => $user
