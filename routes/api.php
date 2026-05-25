@@ -8,11 +8,14 @@ use App\Http\Controllers\ProfileController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/saldo/{user_id}', [WalletController::class, 'getSaldo']);
 Route::post('/topup', [WalletController::class, 'topUp']);
-Route::get('/saldo/{user_id}', [WalletController::class, 'getSaldo']);
-Route::get('/riwayat/{user_id}', [TransaksiController::class, 'getRiwayat']);
 Route::post('/transfer', [WalletController::class, 'transfer']);
 Route::post('/payment', [WalletController::class, 'payment']);
-Route::put('/profile/{id}', [ProfileController::class, 'update']);
+
+Route::get('/riwayat/{user_id}', [TransaksiController::class, 'getRiwayat']);
 Route::get('/pengeluaran/{user_id}', [TransaksiController::class, 'getPengeluaranHariIni']);
+
+Route::put('/profile/{id}', [ProfileController::class, 'update']);
+Route::post('/upload-photo', [ProfileController::class, 'uploadPhoto']);

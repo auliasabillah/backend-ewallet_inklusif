@@ -11,11 +11,18 @@ class WalletController extends Controller
     public function getSaldo(Request $request)
     {
         $wallet = Wallet::where('user_id', $request->user_id)->first();
+
         if (!$wallet) {
-            return response()->json(['saldo' => 0]);
+            return response()->json([
+                'saldo' => 0
+            ]);
         }
-        return response()->json(['saldo' => $wallet->saldo]);
+
+        return response()->json([
+            'saldo' => $wallet->saldo
+        ]);
     }
+
     public function createWallet(int $user_id)
     {
         Wallet::create([
@@ -23,31 +30,41 @@ class WalletController extends Controller
             'saldo' => 0
         ]);
     }
+
     public function topUp(Request $request)
     {
         $request->validate([
             'user_id' => 'required',
             'nominal' => 'required|numeric|min:1',
+            'metode' => 'required'
         ]);
+
         $wallet = Wallet::where('user_id', $request->user_id)->first();
+
         if (!$wallet) {
-            return response()->json(['message' => 'Wallet tidak ditemukan'], 404);
+            return response()->json([
+                'message' => 'Wallet tidak ditemukan'
+            ], 404);
         }
+
         $wallet->saldo += $request->nominal;
         $wallet->save();
-        $transaksi=Transaksi::create([
+
+        $transaksi = Transaksi::create([
             'user_id' => $request->user_id,
-            'tipe' => 'pemasukan',
+            'jenis' => 'pemasukan',
             'kategori' => 'Top Up',
             'nominal' => $request->nominal,
-            'deskripsi' => 'Top Up Saldo',
+            'deskripsi' => $request->metode
         ]);
+
         return response()->json([
-            'pesan' => 'Top up berhasil',
+            'message' => 'Top up berhasil',
             'saldo' => $wallet->saldo,
             'id_transaksi' => $transaksi->id,
         ]);
     }
+
     public function transfer(Request $request)
     {
         $request->validate([
@@ -58,28 +75,39 @@ class WalletController extends Controller
             'rekening' => 'required',
             'catatan' => 'nullable',
         ]);
+
         $wallet = Wallet::where('user_id', $request->user_id)->first();
+
         if (!$wallet) {
-            return response()->json(['message' => 'Wallet tidak ditemukan'], 404);
+            return response()->json([
+                'message' => 'Wallet tidak ditemukan'
+            ], 404);
         }
+
         if ($wallet->saldo < $request->nominal) {
-            return response()->json(['message' => 'Saldo tidak cukup'], 400);
+            return response()->json([
+                'message' => 'Saldo tidak cukup'
+            ], 400);
         }
+
         $wallet->saldo -= $request->nominal;
         $wallet->save();
+
         $transaksi = Transaksi::create([
             'user_id' => $request->user_id,
-            'tipe' => 'pengeluaran',
+            'jenis' => 'pengeluaran',
             'kategori' => 'Transfer',
             'nominal' => $request->nominal,
-            'deskripsi' => 'Transfer ke ' . $request->nama_penerima . ' - ' . $request->bank,
+            'deskripsi' => 'Transfer - ' . $request->bank,
         ]);
+
         return response()->json([
             'message' => 'Transfer berhasil',
             'saldo' => $wallet->saldo,
             'id_transaksi' => $transaksi->id,
         ]);
     }
+
     public function payment(Request $request)
     {
         $request->validate([
@@ -87,22 +115,32 @@ class WalletController extends Controller
             'nominal' => 'required|numeric|min:1',
             'metode' => 'required',
         ]);
+
         $wallet = Wallet::where('user_id', $request->user_id)->first();
+
         if (!$wallet) {
-            return response()->json(['message' => 'Wallet tidak ditemukan'], 404);
+            return response()->json([
+                'message' => 'Wallet tidak ditemukan'
+            ], 404);
         }
+
         if ($wallet->saldo < $request->nominal) {
-            return response()->json(['message' => 'Saldo tidak cukup'], 400);
+            return response()->json([
+                'message' => 'Saldo tidak cukup'
+            ], 400);
         }
+
         $wallet->saldo -= $request->nominal;
         $wallet->save();
+
         $transaksi = Transaksi::create([
             'user_id' => $request->user_id,
-            'tipe' => 'pengeluaran',
+            'jenis' => 'pengeluaran',
             'kategori' => 'Payment',
             'nominal' => $request->nominal,
-            'deskripsi' => 'Pembayaran via ' . $request->metode,
+            'deskripsi' => $request->metode
         ]);
+
         return response()->json([
             'message' => 'Pembayaran berhasil',
             'saldo' => $wallet->saldo,
