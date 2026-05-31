@@ -5,10 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProfileController;
+use App\Models\User;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+/* USER */
 Route::get('/saldo/{user_id}', [WalletController::class, 'getSaldo']);
 Route::post('/topup', [WalletController::class, 'topUp']);
 Route::post('/transfer', [WalletController::class, 'transfer']);
@@ -19,3 +21,10 @@ Route::get('/pengeluaran/{user_id}', [TransaksiController::class, 'getPengeluara
 
 Route::put('/profile/{id}', [ProfileController::class, 'update']);
 Route::post('/upload-photo', [ProfileController::class, 'uploadPhoto']);
+
+/* ADMIN */
+Route::get('/users', function () {
+    return User::all();
+});
+
+Route::get('/transaksi', [TransaksiController::class, 'getAllTransaksi']);

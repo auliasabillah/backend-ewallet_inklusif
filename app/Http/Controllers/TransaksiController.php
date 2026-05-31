@@ -45,4 +45,12 @@ class TransaksiController extends Controller
 
         return response()->json($grouped);
     }
+
+    /* ADMIN */
+    public function getAllTransaksi()
+    {
+        $transaksi = Transaksi::orderBy('created_at', 'desc')->get();
+
+        return response()->json($transaksi);
+    }
 }
