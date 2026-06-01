@@ -147,4 +147,24 @@ class WalletController extends Controller
             'id_transaksi' => $transaksi->id,
         ]);
     }
+
+    public function getPengeluaranPerHari(Request $request)
+    {
+        $bulan = $request->bulan ?? now()->month;
+        $transaksi = Transaksi::where('user_id', $request->user_id)
+        ->where('jenis', 'pengeluaran')
+        ->whereMonth('created_at', $bulan)
+        ->whereYear('created_at', now()->year)
+        ->get();
+        
+        $grouped = [];
+        foreach ($transaksi as $tx) {
+            $hari = \Carbon\Carbon::parse($tx->created_at)->format('d');
+            if (!isset($grouped[$hari])) {
+                $grouped[$hari] = 0;
+            }
+            $grouped[$hari] += $tx->nominal;
+        }
+        return response()->json($grouped);
+    }
 }
