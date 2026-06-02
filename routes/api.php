@@ -28,3 +28,6 @@ Route::get('/users', function () {
 });
 
 Route::get('/transaksi', [TransaksiController::class, 'getAllTransaksi']);
+Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
+Route::put('/users/{id}', [AuthController::class, 'updateUser']);
+
