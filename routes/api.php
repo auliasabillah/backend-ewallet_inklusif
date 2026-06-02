@@ -15,6 +15,7 @@ Route::get('/saldo/{user_id}', [WalletController::class, 'getSaldo']);
 Route::post('/topup', [WalletController::class, 'topUp']);
 Route::post('/transfer', [WalletController::class, 'transfer']);
 Route::post('/payment', [WalletController::class, 'payment']);
+Route::get('/pengeluaran-harian/{user_id}', [WalletController::class, 'getPengeluaranPerHari']);
 
 Route::get('/riwayat/{user_id}', [TransaksiController::class, 'getRiwayat']);
 Route::get('/pengeluaran/{user_id}', [TransaksiController::class, 'getPengeluaranHariIni']);
